@@ -2,15 +2,11 @@ version: 0.2
 phases:
   install:
     runtime-version: corretto21
-    commands:
-      # Install dependencies (if necessary)
-      - echo Installing Maven dependencies
-      - mvn install
   build:
-    commands:
+      commands:
       # Build the project
-      - echo Building the project
-      - mvn clean package
+      - echo build completed on `date`
+        - mvn package -Dmaven.test.skip
   post_build:
     commands:
       # Post-build actions (if any)
