@@ -5,7 +5,7 @@ phases:
     commands:
       # Install dependencies (if necessary)
       - echo Installing Maven dependencies
-      - mvn install -DskipTests
+      - mvn install
   build:
     commands:
       # Build the project
