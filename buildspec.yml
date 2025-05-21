@@ -1,16 +1,18 @@
 version: 0.2
 phases:
   install:
-    runtime-version: corretto21
+    runtime-versions:
+      java: corretto21
+
   build:
-      commands:
-      # Build the project
-      - echo build completed on `date`
+    commands:
+      - echo build started on `date`
       - mvn package -Dmaven.test.skip
+
   post_build:
     commands:
-      # Post-build actions (if any)
       - echo Build completed on `date`
+
 artifacts:
   files:
     - target/*.jar
