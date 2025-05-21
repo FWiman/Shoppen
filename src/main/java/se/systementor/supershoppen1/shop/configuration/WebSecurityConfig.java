@@ -1,12 +1,11 @@
 package se.systementor.supershoppen1.shop.configuration;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
@@ -15,61 +14,42 @@ import se.systementor.supershoppen1.shop.services.ShopUserDetailsService;
 
 @Configuration
 @EnableWebSecurity
-public class WebSecurityConfig  {
+public class WebSecurityConfig {
 
-    @Autowired
-    private ShopUserDetailsService userDetailsService;
+    private final ShopUserDetailsService userDetailsService;
+    private final PasswordEncoder passwordEncoder;
 
-
-
-    @Autowired
-    public void configureGlobal(AuthenticationManagerBuilder auth,PasswordEncoder passwordEncoder) 
-      throws Exception {
-        auth
-        .userDetailsService(userDetailsService)
-        .passwordEncoder(passwordEncoder);
-        //   .inMemoryAuthentication()
-        //   .passwordEncoder(passwordEncoder)
-        //   .withUser("user@user.se")
-        //   .password(passwordEncoder.encode("stefan"))
-        //   .roles("USER")
-        //   .and()
-        //   .withUser("admin@user.se")
-        //   .password(passwordEncoder.encode("stefan"))
-        //   .roles("ADMIN");
+    public WebSecurityConfig(ShopUserDetailsService userDetailsService, PasswordEncoder passwordEncoder) {
+        this.userDetailsService = userDetailsService;
+        this.passwordEncoder = passwordEncoder;
     }
-    
 
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
+        return authConfig.getAuthenticationManager();
+    }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .authorizeRequests()
-					.antMatchers("/", "/*", "/css/**", "/images/**", "/lib/**", "/scripts/**", "/static/**").permitAll()
-					.antMatchers("/admin/**").hasAnyRole("ADMIN")
-					.antMatchers("/user/**").hasAnyRole("USER")
-					.anyRequest().authenticated()
-                .and()
-                    .formLogin()
-                        .loginPage("/login")
-                        .permitAll()
-                        .defaultSuccessUrl("/")
-                        .and()
-                .logout()
-					.permitAll()
-                    .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-                    .logoutSuccessUrl("/login");
+            .userDetailsService(userDetailsService)
+            .authorizeHttpRequests(authorize -> authorize
+                .requestMatchers("/", "/*", "/css/**", "/images/**", "/lib/**", "/scripts/**", "/static/**").permitAll()
+                .requestMatchers("/admin/**").hasRole("ADMIN")
+                .requestMatchers("/user/**").hasRole("USER")
+                .anyRequest().authenticated()
+            )
+            .formLogin(form -> form
+                .loginPage("/login")
+                .permitAll()
+                .defaultSuccessUrl("/")
+            )
+            .logout(logout -> logout
+                .permitAll()
+                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+                .logoutSuccessUrl("/login")
+            );
 
-
-        return http.build(); 
+        return http.build();
     }
-
-
-    public WebSecurityConfig() {
-        super();
-    }
-
-
-
-
 }

@@ -2,12 +2,10 @@ package se.systementor.supershoppen1.shop.services;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
-import net.bytebuddy.matcher.BooleanMatcher;
-import se.systementor.supershoppen1.shop.model.Product;
-import se.systementor.supershoppen1.shop.model.ProductRepository;
 import se.systementor.supershoppen1.shop.model.Subscriber;
 import se.systementor.supershoppen1.shop.model.SubscriberRepository;
 
@@ -30,8 +28,8 @@ public class SubscriberService {
         return l;
     }
 
-    public Subscriber get(Integer id){
-        return repository.findById(id).get();
+    public Optional<Subscriber> get(Integer id){
+        return repository.findById(id);
     }
 
     public boolean isSubscriber(String email){
@@ -44,7 +42,5 @@ public class SubscriberService {
         sub.setEmail(email);
         repository.save(sub);
     }
-
-   
 }
 
