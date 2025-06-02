@@ -6,35 +6,182 @@ xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
     <head>
     <meta charset="UTF-8"/>
     <title>replace</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .login-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 80vh;
+            padding: 20px;
+        }
+        
+        .login-box {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .github-login-button {
+            display: inline-block;
+            width: 100%;
+            margin: 20px 0;
+        }
+
+        .github-login-button button {
+            width: 100%;
+            padding: 15px 25px;
+            font-size: 18px;
+            font-weight: 600;
+            color: white;
+            background-color: #2da44e;
+            border: 1px solid rgba(27, 31, 35, 0.15);
+            border-radius: 6px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.12);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease-in-out;
+        }
+
+        .github-login-button button:hover {
+            background-color: #2c974b;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .github-login-button i {
+            font-size: 24px;
+            margin-right: 12px;
+        }
+
+        .or-divider {
+            margin: 30px 0;
+            text-align: center;
+            position: relative;
+        }
+
+        .or-divider span {
+            background: white;
+            padding: 0 15px;
+            color: #666;
+            font-size: 16px;
+            font-weight: 500;
+            position: relative;
+            z-index: 1;
+        }
+
+        .or-divider:before {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: #e1e4e8;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #24292e;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            border: 1px solid #e1e4e8;
+            border-radius: 6px;
+            transition: border-color 0.2s ease;
+        }
+
+        .form-control:focus {
+            border-color: #0366d6;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(3, 102, 214, 0.3);
+        }
+
+        .btn-primary {
+            background: #0366d6;
+            color: white;
+            border: none;
+            padding: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 6px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+            transition: background-color 0.2s ease;
+        }
+
+        .btn-primary:hover {
+            background: #0255b3;
+        }
+
+        .text-center {
+            text-align: center;
+            margin-bottom: 15px;
+            color: #dc3545;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #24292e;
+            font-size: 24px;
+        }
+    </style>
 </head>
 <body>
+    <div class="login-container">
+        <div class="login-box">
+            <h2>Logga in</h2>
+            
+            <div class="github-login-button">
+                <a href="/oauth2/authorization/github" style="text-decoration: none;">
+                    <button type="button">
+                        <i class="fab fa-github"></i>
+                        Logga in med GitHub
+                    </button>
+                </a>
+            </div>
 
-    <div class="section">
-        <!-- container -->
-        <div class="container">
-            <div class="mx-auto">
-                <h2>Log in</h2>
+            <div class="or-divider">
+                <span>eller</span>
+            </div>
+
             <form th:action="@{/login}" th:object="${loginForm}" method="post">
-              <div class="text--center" th:if="${param.error}"> Invalid username and password. </div> <div class="text--center" th:if="${param.logout}"> You have been logged out. </div>                
-                <p th:if="${error}" class="error">UserName & Password Incorrect</p>
-                        <div class="form-group">
-                            <label for="username">Email address</label>
-                          <input class="form-control" required type="email" name="username">
-                        </div>
-                        <div class="form-group">
-                            <label for="password">Lösenord</label>
-                          <input class="form-control" required type="password" name="password">
-                        </div>
-                          <button type="submit" class="btn btn-primary">
-                            Login
-                            </button>
-                      </form>
-                    </div>
+                <div class="text-center" th:if="${param.error}">Ogiltigt användarnamn eller lösenord</div>
+                <div class="text-center" th:if="${param.logout}">Du har loggat ut</div>
+                <p th:if="${error}" class="error">Användarnamn & Lösenord är felaktigt</p>
+                
+                <div class="form-group">
+                    <label for="username">E-postadress</label>
+                    <input class="form-control" required type="email" name="username" placeholder="Din e-postadress">
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Lösenord</label>
+                    <input class="form-control" required type="password" name="password" placeholder="Ditt lösenord">
+                </div>
+                
+                <button type="submit" class="btn btn-primary">
+                    Logga in
+                </button>
+            </form>
         </div>
-        <!-- /container -->
     </div>
-
-
-
 </body>
 </html>

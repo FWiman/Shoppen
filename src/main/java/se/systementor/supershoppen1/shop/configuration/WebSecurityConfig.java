@@ -32,24 +32,20 @@ public class WebSecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-            .userDetailsService(userDetailsService)
-            .authorizeHttpRequests(authorize -> authorize
-                .requestMatchers("/", "/*", "/css/**", "/images/**", "/lib/**", "/scripts/**", "/static/**").permitAll()
-                .requestMatchers("/admin/**").hasRole("ADMIN")
-                .requestMatchers("/user/**").hasRole("USER")
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers("/", "/home", "/products", "/css/**", "/images/**", "/oauth2/**").permitAll()
                 .anyRequest().authenticated()
             )
             .formLogin(form -> form
                 .loginPage("/login")
                 .permitAll()
-                .defaultSuccessUrl("/")
+            )
+            .oauth2Login(oauth2 -> oauth2
+                .loginPage("/login")
             )
             .logout(logout -> logout
                 .permitAll()
-                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-                .logoutSuccessUrl("/login")
             );
-
         return http.build();
     }
 }
