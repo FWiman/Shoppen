@@ -49,5 +49,11 @@ public class HomeController {
         return productService.getAll();
     }
 
+    @GetMapping(path="/privacypolicy")
+    String privacypolicy()
+    {
+        return "privacypolicy";
+    }
+
 
 }
